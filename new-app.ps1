@@ -29,7 +29,7 @@ $testName = $projName + "Tests"
 dotnet new nunit --framework net6.0 --output $testPath --name $testName
 dotnet sln add "$testPath/$testName.csproj"
 
-npm create-react-app "$dirName/client" --template typescript
+npm create-react-app "$dirNameClient" --template typescript
 
 git add ./*
 git commit -m "init .net 6 proj"
