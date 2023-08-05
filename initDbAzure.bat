@@ -59,8 +59,9 @@ if not exist login_complete.tmp (
     timeout /t 1 /nobreak >nul
     goto wait_loop1
 )
+del "login_complete.tmp"
 
-start "" /B cmd /c "az sql db create -n %database_name% -s azure-server -g appsvc_linux_Sweden && echo Done>createDb_complete.tmp"
+start "" /B cmd /c "az sql db create -n %database_name% -s azure-server -g appsvc_linux_Sweden -e Basic && echo Done>createDb_complete.tmp"
 
 REM Wait until the createDb_complete.tmp file is created, indicating 'az login' has finished.
 :wait_loop2
@@ -68,7 +69,7 @@ if not exist createDb_complete.tmp (
     timeout /t 1 /nobreak >nul
     goto wait_loop2
 )
-
+del "createDb_complete.tmp"
 
 
 
@@ -87,6 +88,7 @@ for %%f in (%sqlData%) do (
 )
 
 
+
 GOTO :EOF
 
 
@@ -100,4 +102,9 @@ echo   -S     Specifies the SQL Server name.
 echo   -D     Specifies the database name.
 echo   -U     Specifies the user name (optional). If provided, the script will prompt for the password using -P.
 echo.
+echo Common usage examle: ./initDbAzure -S azure-server.database.windows.net -D ChessDb -U mrevening
+echo Common errors: Sqlcmd: Error: Microsoft ODBC Driver 17 for SQL Server : Cannot open server 'azure-server' requested by the login. Client with IP address '' is not allowed to access the server.  To enable access, use the Azure Management Portal or run sp_set_firewall_rule on the master database to create a firewall rule for this IP address or address range.  It may take up to five minutes for this change to take effect..
+echo Solution: log in to ssms 
+echo Common error: Msg 2714, Level 16, State 6, Server azure-server, Line 2 There is already an object named 'Color' in the database.
+echo Solution: db already exists
 GOTO :EOF
